@@ -1,0 +1,94 @@
+# -----------------------------------------------------------------
+#                                 TESTES
+# -----------------------------------------------------------------
+# Descomente (apague o '#') de UMA questão por vez para testar.
+#
+# -----------------------------------------------------------------
+# Modelo: M/M/1
+# 1. Um caixa de banco atende em média 12 clientes por hora. A taxa de
+# chegada média é de 10 clientes por hora.
+# Pergunta: Qual é a utilização do sistema?
+#
+# --- Análise ---
+# Parser encontra: lambda=10, mu=12
+# Métrica pedida: ρ (Utilização)
+# Resposta Esperada: 0.833333
+# -----------------------------------------------------------------
+
+
+# -----------------------------------------------------------------
+# Modelo: M/M/1
+# 2. Em uma barbearia, os clientes chegam a uma taxa média de 4 por hora e o
+# barbeiro atende 5 clientes por hora.
+# Pergunta: Qual o tempo médio de espera na fila (Wq)?
+#
+# --- Análise ---
+# Parser encontra: lambda=4, mu=5
+# Métrica pedida: Wq (Tempo médio na fila)
+# Resposta Esperada: 0.8 horas (ou 48 minutos)
+# -----------------------------------------------------------------
+
+
+# -----------------------------------------------------------------
+# Modelo: M/M/1
+ #3. Em um call center, chegam 6 chamadas por hora e um atendente atende 8
+ #chamadas por hora.
+ #Pergunta: Qual a probabilidade de o servidor estar livre (ocioso)?
+#
+# --- Análise ---
+# Parser encontra: lambda=6, mu=8, c=1 (de "um atendente")
+# Métrica pedida: P₀ (Prob. sistema vazio)
+# Resposta Esperada: 0.25
+# -----------------------------------------------------------------
+
+# -----------------------------------------------------------------
+# Modelo: M/M/1
+ #4. A taxa de chegada é de 15 clientes/hora e a taxa de atendimento é de 20
+ #clientes/hora.
+ #Pergunta: Qual é o tempo médio no sistema (W) de um cliente?
+#
+# --- Análise ---
+# Parser encontra: lambda=15, mu=20
+# Métrica pedida: W (Tempo médio no sistema)
+# Resposta Esperada: 0.2 horas (ou 12 minutos)
+# -----------------------------------------------------------------
+
+
+# -----------------------------------------------------------------
+# Modelo: M/M/1
+# 5. Um consultório médico atende 9 pacientes/hora, e chegam em média 8
+# pacientes/hora.
+# Pergunta: Qual é o tempo médio de espera na fila?
+#
+# --- Análise ---
+# Parser encontra: lambda=8, mu=9
+# Métrica pedida: Wq (Tempo médio na fila)
+# Resposta Esperada: 0.888889 horas (ou 53.33 minutos)
+# -----------------------------------------------------------------
+
+
+# -----------------------------------------------------------------
+# Modelo: M/M/1
+# 6. Em uma farmácia, chegam 18 clientes/hora e o atendente consegue atender
+# 20 clientes/hora.
+# Pergunta: Qual o número médio de clientes na fila?
+#
+# --- Análise ---
+# Parser encontra: lambda=18, mu=20
+# Métrica pedida: Lq (Nº médio na fila)
+# Resposta Esperada: 8.1
+# -----------------------------------------------------------------
+
+
+# -----------------------------------------------------------------
+# Modelo: M/M/c
+ #7. Em uma pizzaria, chegam 20 clientes/hora e há 2 atendentes, cada um
+ #com taxa de serviço de 12 clientes/hora.
+ #Pergunta: O sistema é estável? Se sim, qual a utilização média de cada
+ #atendente?
+#
+# --- Análise ---
+# Parser encontra: lambda=20, mu=12, c=2 (de "2 atendentes")
+# Métrica pedida: ρ (Utilização por servidor)
+# Resposta Esperada: 0.833333
+# -----------------------------------------------------------------
