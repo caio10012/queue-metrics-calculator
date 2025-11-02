@@ -56,19 +56,3 @@ Este projeto vai além de uma simples calculadora, servindo como uma ferramenta 
 4.  Clique em "Salvar". A fórmula agora está disponível.
 5.  Para remover fórmulas, clique em "Gerenciar Fórmulas".
 
-## Empacotando para Windows (Criando .exe)
-
-Para criar um arquivo executável (`.exe`) que funcione em outros computadores Windows sem precisar instalar Python.
-
-1.  Certifique-se de ter o `pyinstaller` instalado:
-    ```bash
-    pip install pyinstaller ttkbootstrap
-    ```
-
-2.  Execute o PyInstaller (substitua `Calculadora.py` pelo nome do seu arquivo). O comando `--onefile` cria um único `.exe` e o `--windowed` impede que o terminal preto apareça.
-
-    ```bash
-    pyinstaller --onefile --windowed --name="CalculadoraFilas" Calculadora.py
-    ```
-
-3.  O arquivo `.exe` final estará dentro da pasta `dist`.
