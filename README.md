@@ -40,6 +40,16 @@ Este projeto vai além de uma simples calculadora, servindo como uma ferramenta 
 * Python 3.8+
 * Biblioteca `ttkbootstrap`
 
+## Download (Executável)
+
+Para usuários de Windows que desejam apenas **usar o programa** sem precisar instalar Python ou qualquer dependência, uma versão executável (`.exe`) está disponível.
+
+:arrow_down: **[Clique aqui para baixar a versão mais recente (releases/latest)](releases/latest)**
+
+1.  Baixe o arquivo `.zip` da página de "Releases".
+2.  Extraia o conteúdo do `.zip` para uma pasta.
+3.  Execute o arquivo `CalculadoraFilas.exe`.
+
 ## Como Usar o Programa
 
 1.  Selecione o modelo de fila desejado no menu (ex: "M/M/c").
