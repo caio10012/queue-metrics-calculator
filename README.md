@@ -20,9 +20,12 @@ Este projeto vai além de uma simples calculadora, servindo como uma ferramenta 
     * **Validação Segura:** As expressões são validadas usando o módulo `ast` para permitir apenas operações matemáticas seguras, prevenindo a execução de código malicioso.
     * **Persistência:** As fórmulas criadas são salvas em um arquivo `custom_formulas.json`, ficando disponíveis em futuras utilizações.
     * **Gerenciamento:** Uma interface dedicada permite ao usuário visualizar e deletar fórmulas salvas.
+* **Importação e Exportação de Dados:**
+    * **Exportar para PDF:** Após calcular, um botão permite exportar um relatório completo em PDF com os parâmetros e resultados.
+    * **Importar de .txt:** Um botão permite carregar parâmetros de um arquivo `.txt`. O parser inteligente usa RegEx para ler frases em linguagem natural (ex: "taxa de chegada é 10").
 * **Sistema de Ajuda Integrado e Contextual:**
     * **Ajuda de Modelos:** Um botão "?” ao lado da seleção de modelos explica a diferença, os casos de uso e as premissas de cada um dos 6 modelos.
-    * **Ajuda de Parâmetros:** Cada campo de parâmetro ($\lambda, \mu, c, k, n$) possui um botão "?” que explica o que aquele parâmetro significa. A ajuda é contextual (ex: a ajuda de $\lambda$ no modo "Personalizado" explica a necessidade de usar `lambd`).
+    * **Ajuda de Parâmetros:** Cada campo de parâmetro (λ, μ, c, k, n) possui um botão "?” que explica o que aquele parâmetro significa. A ajuda é contextual (ex: a ajuda de λ no modo "Personalizado" explica a necessidade de usar `lambd`).
     * **Ajuda de Métricas (Definições e Fórmulas):** Abaixo da tabela de resultados, uma caixa de texto é preenchida dinamicamente com as definições e as fórmulas exatas (em notação Unicode) usadas para calcular cada métrica daquele modelo específico.
 
 ## Visualização (Screenshots)
@@ -38,7 +41,7 @@ Este projeto vai além de uma simples calculadora, servindo como uma ferramenta 
 ## Requisitos
 
 * Python 3.8+
-* Biblioteca `ttkbootstrap`
+* Bibliotecas: `ttkbootstrap` e `reportlab`
 
 ## Download (Executável)
 
@@ -53,10 +56,12 @@ Para usuários de Windows que desejam apenas **usar o programa** sem precisar in
 ## Como Usar o Programa
 
 1.  Selecione o modelo de fila desejado no menu (ex: "M/M/c").
-2.  Preencha os parâmetros que aparecem (ex: $\lambda$, $\mu$, $c$). Use os botões "?” ao lado de cada campo se tiver dúvidas.
-3.  Clique em "Calcular Todas as Métricas".
-4.  Analise os resultados na tabela superior.
-5.  Role para baixo na área "Resultados" para ver as definições e as fórmulas exatas que geraram aqueles números.
+2.  (Opcional) Clique em **"Importar Parâmetros de Arquivo"** e selecione um `.txt` com o problema.
+3.  (Opcional) Preencha ou ajuste os parâmetros (ex: λ, μ, c). Use los botões "?” ao lado de cada campo se tiver dúvidas.
+4.  Clique em "Calcular Todas as Métricas".
+5.  Analise os resultados na tabela superior.
+6.  (Opcional) Clique em **"Exportar Resultados para PDF"** para salvar um relatório.
+7.  Role para baixo na área "Resultados" para ver as definições e as fórmulas exatas que geraram aqueles números.
 
 **Para Fórmulas Personalizadas:**
 
@@ -66,3 +71,19 @@ Para usuários de Windows que desejam apenas **usar o programa** sem precisar in
 4.  Clique em "Salvar". A fórmula agora está disponível.
 5.  Para remover fórmulas, clique em "Gerenciar Fórmulas".
 
+## Empacotando para Windows (Criando .exe)
+
+Para criar um arquivo executável (`.exe`) que funcione em outros computadores Windows sem precisar instalar Python.
+
+1.  Certifique-se de ter o `pyinstaller`, `ttkbootstrap` e `reportlab` instalados no seu ambiente virtual:
+    ```bash
+    pip install pyinstaller ttkbootstrap reportlab
+    ```
+
+2.  Execute o PyInstaller (substitua `Calculadora.py` pelo nome do seu arquivo). O comando `--add-data` é **essencial** para incluir seus outros scripts Python.
+
+    ```bash
+    pyinstaller --onefile --windowed --name="CalculadoraFilas" --add-data="param_parser.py;." --add-data="pdf_export.py;." Calculadora.py
+    ```
+
+3.  O arquivo `.exe` final estará dentro da pasta `dist`.
