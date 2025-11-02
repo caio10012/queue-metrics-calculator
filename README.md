@@ -13,7 +13,7 @@ Este projeto vai além de uma simples calculadora, servindo como uma ferramenta 
     * **M/M/c:** Múltiplos servidores, fila única infinita.
     * **M/M/∞:** Servidores infinitos (modelo de autoatendimento).
     * **M/M/1/K:** Um servidor, capacidade finita (com perdas).
-    * **Comparativo (M/M/1 vs M/M/$\infty$):** Uma ferramenta de análise que compara um sistema de servidor único contra um sistema ideal com os mesmos parâmetros.
+    * **Comparativo (M/M/1 vs M/M/∞):** Uma ferramenta de análise que compara um sistema de servidor único contra um sistema ideal com os mesmos parâmetros.
 * **Módulo de Fórmulas Personalizadas:**
     * **Modelo "Personalizado":** Permite ao usuário adicionar, salvar e calcular suas próprias fórmulas.
     * **Criação Dinâmica:** Uma interface pop-up permite definir um nome, os parâmetros (ex: `lambd, mu, c`) e a expressão matemática (ex: `(lambd / mu) / (1 - (lambd / mu))`).
