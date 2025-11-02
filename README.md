@@ -1,33 +1,74 @@
-# Calculadora de Métricas de Teoria das Filas
+# Calculadora Avançada de Teoria das Filas
 
-Este projeto é uma ferramenta interativa para calcular métricas de sistemas de filas, utilizando uma interface gráfica em Tkinter. Atualmente, suporta múltiplos modelos de filas, permitindo calcular diferentes métricas de forma dinâmica.
+Uma ferramenta de desktop, construída em Python e `ttkbootstrap`, para calcular e analisar métricas de desempenho de sistemas de filas.
 
-## Funcionalidades
+Este projeto vai além de uma simples calculadora, servindo como uma ferramenta educacional interativa. Ela permite que os usuários não apenas obtenham resultados (como $L$, $L_q$, $W$, $W_q$), mas também entendam o que cada modelo significa, o que cada parâmetro representa e quais fórmulas foram usadas para chegar ao resultado.
 
-- Seleção do modelo de fila entre as opções disponíveis (ex: M/M/1, M/M/c, M/D/1, etc.).
-- Escolha da métrica/fórmula desejada (ex: Utilização, Número médio na fila, Tempo médio no sistema, etc.).
-- Geração automática dos campos de entrada dos parâmetros necessários para a fórmula selecionada.
-- Cálculo das métricas de forma segura, com validação de entradas e mensagens de erro para valores inválidos.
-- Exibição do resultado na própria interface gráfica.
-- Fácil expansão para outros modelos de filas e fórmulas adicionais.
+## Funcionalidades Principais
 
-## Como usar
+* **Interface Gráfica Moderna:** Utiliza `ttkbootstrap` (baseado no Tkinter) para uma aparência limpa, profissional e com temas.
+* **Cálculo "Tudo em Um":** Em vez de calcular uma métrica por vez, o usuário seleciona um modelo, insere os parâmetros, e o sistema calcula *todas* as métricas de desempenho relevantes de uma só vez.
+* **Modelos Suportados:**
+    * **M/M/1:** Um servidor, fila infinita.
+    * **M/M/c:** Múltiplos servidores, fila única infinita.
+    * **M/M/$\infty$:** Servidores infinitos (modelo de autoatendimento).
+    * **M/M/1/K:** Um servidor, capacidade finita (com perdas).
+    * **Comparativo (M/M/1 vs M/M/$\infty$):** Uma ferramenta de análise que compara um sistema de servidor único contra um sistema ideal com os mesmos parâmetros.
+* **Módulo de Fórmulas Personalizadas:**
+    * **Modelo "Personalizado":** Permite ao usuário adicionar, salvar e calcular suas próprias fórmulas.
+    * **Criação Dinâmica:** Uma interface pop-up permite definir um nome, os parâmetros (ex: `lambd, mu, c`) e a expressão matemática (ex: `(lambd / mu) / (1 - (lambd / mu))`).
+    * **Validação Segura:** As expressões são validadas usando o módulo `ast` para permitir apenas operações matemáticas seguras, prevenindo a execução de código malicioso.
+    * **Persistência:** As fórmulas criadas são salvas em um arquivo `custom_formulas.json`, ficando disponíveis em futuras utilizações.
+    * **Gerenciamento:** Uma interface dedicada permite ao usuário visualizar e deletar fórmulas salvas.
+* **Sistema de Ajuda Integrado e Contextual:**
+    * **Ajuda de Modelos:** Um botão "?” ao lado da seleção de modelos explica a diferença, os casos de uso e as premissas de cada um dos 6 modelos.
+    * **Ajuda de Parâmetros:** Cada campo de parâmetro ($\lambda, \mu, c, k, n$) possui um botão "?” que explica o que aquele parâmetro significa. A ajuda é contextual (ex: a ajuda de $\lambda$ no modo "Personalizado" explica a necessidade de usar `lambd`).
+    * **Ajuda de Métricas (Definições e Fórmulas):** Abaixo da tabela de resultados, uma caixa de texto é preenchida dinamicamente com as definições e as fórmulas exatas (em notação Unicode) usadas para calcular cada métrica daquele modelo específico.
 
-1. Abra o programa.
-2. Selecione o modelo de fila.
-3. Escolha a fórmula/métrica que deseja calcular.
-4. Preencha os parâmetros exigidos.
-5. Clique em "Calcular" para obter o resultado.
+## Visualização (Screenshots)
+
+| Tela Principal (M/M/c) | Ajuda de Parâmetro (Pop-up) |
+| :---: | :---: |
+| ![Tela principal mostrando resultados do M/M/c](Imagens/Visualizacao.png) | ![Pop-up de ajuda para o parâmetro 'k'](Imagens/Ajuda.png) |
+
+| Criação de Fórmula Personalizada |
+| :---: |
+| ![Pop-up de adicionar fórmula personalizada](Imagens/Add_Formula.png) |
 
 ## Requisitos
 
-- Python 3.x
-- Tkinter 
+* Python 3.8+
+* Biblioteca `ttkbootstrap`
 
-## Observações
+## Como Usar o Programa
 
-- Para gerar um executável standalone no Windows, utilize o PyInstaller:
+1.  Selecione o modelo de fila desejado no menu (ex: "M/M/c").
+2.  Preencha os parâmetros que aparecem (ex: $\lambda$, $\mu$, $c$). Use os botões "?” ao lado de cada campo se tiver dúvidas.
+3.  Clique em "Calcular Todas as Métricas".
+4.  Analise os resultados na tabela superior.
+5.  Role para baixo na área "Resultados" para ver as definições e as fórmulas exatas que geraram aqueles números.
 
-```bash
-python -m pip install pyinstaller
-python -m PyInstaller --onefile --noconsole Teste.py
+**Para Fórmulas Personalizadas:**
+
+1.  Selecione o modelo "Personalizado".
+2.  Clique em "Adicionar Nova Fórmula".
+3.  Preencha o nome, os parâmetros (`lambd`, `mu`, `c`, `k`, `n`) e a expressão matemática segura.
+4.  Clique em "Salvar". A fórmula agora está disponível.
+5.  Para remover fórmulas, clique em "Gerenciar Fórmulas".
+
+## Empacotando para Windows (Criando .exe)
+
+Para criar um arquivo executável (`.exe`) que funcione em outros computadores Windows sem precisar instalar Python.
+
+1.  Certifique-se de ter o `pyinstaller` instalado:
+    ```bash
+    pip install pyinstaller ttkbootstrap
+    ```
+
+2.  Execute o PyInstaller (substitua `Calculadora.py` pelo nome do seu arquivo). O comando `--onefile` cria um único `.exe` e o `--windowed` impede que o terminal preto apareça.
+
+    ```bash
+    pyinstaller --onefile --windowed --name="CalculadoraFilas" Calculadora.py
+    ```
+
+3.  O arquivo `.exe` final estará dentro da pasta `dist`.
