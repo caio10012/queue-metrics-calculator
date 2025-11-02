@@ -34,9 +34,9 @@ Este projeto vai além de uma simples calculadora, servindo como uma ferramenta 
 | :---: | :---: |
 | ![Tela principal mostrando resultados do M/M/c](Imagens/Visualizacao.png) | ![Pop-up de ajuda para o parâmetro 'k'](Imagens/Ajuda.png) |
 
-| Criação de Fórmula Personalizada |
-| :---: |
-| ![Pop-up de adicionar fórmula personalizada](Imagens/Add_Formula.png) |
+| Criação de Fórmula Personalizada | Relatório PDF Gerado |
+| :---: | :---: |
+| ![Pop-up de adicionar fórmula personalizada](Imagens/Add_Formula.png) | ![Exemplo de relatório PDF gerado pelo programa](Imagens/PDF_Example.png) |
 
 ## Requisitos
 
