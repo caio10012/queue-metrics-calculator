@@ -1,0 +1,28 @@
+[
+    {
+        "label": "teste",
+        "params": [
+            "n",
+            "mu"
+        ],
+        "expr": "mu - n"
+    },
+    {
+        "label": "N\u00famero",
+        "params": [
+            "k",
+            "mu"
+        ],
+        "expr": "k - mu"
+    },
+    {
+        "label": "Teste",
+        "params": [
+            "lambd",
+            "mu",
+            "c",
+            "k"
+        ],
+        "expr": "pow(lambd,4) * mu / c - k"
+    }
+]
