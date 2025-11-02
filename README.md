@@ -11,7 +11,7 @@ Este projeto vai além de uma simples calculadora, servindo como uma ferramenta 
 * **Modelos Suportados:**
     * **M/M/1:** Um servidor, fila infinita.
     * **M/M/c:** Múltiplos servidores, fila única infinita.
-    * **M/M/$\infty$:** Servidores infinitos (modelo de autoatendimento).
+    * **M/M/∞:** Servidores infinitos (modelo de autoatendimento).
     * **M/M/1/K:** Um servidor, capacidade finita (com perdas).
     * **Comparativo (M/M/1 vs M/M/$\infty$):** Uma ferramenta de análise que compara um sistema de servidor único contra um sistema ideal com os mesmos parâmetros.
 * **Módulo de Fórmulas Personalizadas:**
