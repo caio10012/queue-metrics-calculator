@@ -44,7 +44,7 @@ Este projeto vai além de uma simples calculadora, servindo como uma ferramenta 
 
 Para usuários de Windows que desejam apenas **usar o programa** sem precisar instalar Python ou qualquer dependência, uma versão executável (`.exe`) está disponível.
 
-:arrow_down: **[Clique aqui para baixar a versão mais recente (releases/latest)](releases/latest)**
+:arrow_down: **[Clique aqui para baixar a versão mais recente](https://github.com/caio10012/queue-metrics-calculator/releases/latest)**
 
 1.  Baixe o arquivo `.zip` da página de "Releases".
 2.  Extraia o conteúdo do `.zip` para uma pasta.
