@@ -4,6 +4,9 @@ import math
 import json 
 import ast  
 from tkinter import messagebox, Toplevel, Text, Scrollbar, Listbox
+from tkinter import filedialog  
+import pdf_export
+import param_parser             
 
 # -------------------------------------------------------------------
 # Funções de Cálculo (Lógica Matemática - Inalterada)
@@ -231,7 +234,7 @@ MODELS_CONFIG = {
     "Personalizado": {
         "params": {}, 
         "optional_params": {
-            "lambd": "Taxa de Chegada (λ)", 
+            "lambd": "Taxa de Chegada (λ) [use 'lambd']", 
             "mu": "Taxa de Serviço (μ)", 
             "c": "Nº de Servidores (c)",
             "k": "Capacidade (K)",
@@ -347,7 +350,6 @@ class AddFormulaWindow(Toplevel):
         self.geometry(f'+{x}+{y}')
         self.wait_window(self)
 
-    # --- FUNÇÃO DE VALIDAÇÃO CORRIGIDA ---
     def _validate_expression(self, expression, param_list):
         """Valida a expressão matemática usando AST."""
         try:
@@ -357,14 +359,13 @@ class AddFormulaWindow(Toplevel):
 
         allowed_names = set(param_list) | set(ALLOWED_MATH)
         
-        # CORREÇÃO: Removido 'ast.Num'
         allowed_nodes = {
             ast.Expression, ast.Call, ast.Name, ast.Load,
             ast.BinOp, ast.UnaryOp, ast.Compare,
             ast.Add, ast.Sub, ast.Mult, ast.Div, ast.Mod, ast.Pow,
             ast.USub, ast.UAdd,
             ast.Eq, ast.NotEq, ast.Lt, ast.LtE, ast.Gt, ast.GtE,
-            ast.Constant # 'ast.Num' foi removido
+            ast.Constant 
         }
 
         for node in ast.walk(tree):
@@ -525,6 +526,7 @@ class QueueingCalculatorApp:
         
         self._create_widgets()
 
+    # --- INÍCIO DA SEÇÃO CORRIGIDA ---
     def _create_widgets(self):
         main_frame = tb.Frame(self.root, padding="15")
         main_frame.pack(fill=BOTH, expand=True)
@@ -552,10 +554,17 @@ class QueueingCalculatorApp:
         self.params_frame.columnconfigure(0, weight=0) 
         self.params_frame.columnconfigure(2, weight=0) 
         
-        tb.Separator(input_frame, bootstyle="secondary").grid(row=2, column=0, columnspan=3, sticky="ew", pady=10)
+        # --- NOVO BOTÃO DE IMPORTAR PARÂMETROS ---
+        self.import_button = tb.Button(input_frame, text="Importar Parâmetros de Arquivo", 
+                                       command=self._import_params, bootstyle="primary-outline")
+        self.import_button.grid(row=2, column=0, columnspan=3, sticky="ew", pady=(10, 5), padx=5)
+        self.import_button.grid_remove() # Começa escondido
+        
+        # --- LINHAS REORDENADAS ---
+        tb.Separator(input_frame, bootstyle="secondary").grid(row=3, column=0, columnspan=3, sticky="ew", pady=10) # Era 2
         
         formula_btn_frame = tb.Frame(input_frame)
-        formula_btn_frame.grid(row=3, column=0, columnspan=3, sticky="ew")
+        formula_btn_frame.grid(row=4, column=0, columnspan=3, sticky="ew") # Era 3
         formula_btn_frame.columnconfigure(0, weight=1)
         formula_btn_frame.columnconfigure(1, weight=1)
         self.add_formula_button = tb.Button(formula_btn_frame, text="Adicionar Nova Fórmula", command=self._open_add_formula_window, bootstyle="info")
@@ -566,18 +575,22 @@ class QueueingCalculatorApp:
         self.formula_btn_frame = formula_btn_frame 
 
         calc_button = tb.Button(input_frame, text="Calcular Todas as Métricas", command=self._calculate_metrics, bootstyle="success")
-        calc_button.grid(row=4, column=0, columnspan=3, pady=(10, 5), sticky="ew")
+        calc_button.grid(row=5, column=0, columnspan=3, pady=(10, 5), sticky="ew") # Era 4
 
         output_frame = tb.Labelframe(main_frame, text="Resultados", padding="15", bootstyle="info")
         output_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=(10, 5))
-        output_frame.rowconfigure(0, weight=1) 
-        output_frame.rowconfigure(1, weight=0)
-        output_frame.rowconfigure(2, weight=0)
-        output_frame.rowconfigure(3, weight=1)
+        # (O resto da sua função _create_widgets que mexe no output_frame continua aqui)
+        
+        # --- MUDANÇA AQUI: Adicionamos uma linha para o botão ---
+        output_frame.rowconfigure(0, weight=1) # Linha 0: Tabela
+        output_frame.rowconfigure(1, weight=0) # Linha 1: Botão Exportar (NOVO)
+        output_frame.rowconfigure(2, weight=0) # Linha 2: Separador
+        output_frame.rowconfigure(3, weight=0) # Linha 3: Título Ajuda
+        output_frame.rowconfigure(4, weight=1) # Linha 4: Caixa de Ajuda
         output_frame.columnconfigure(0, weight=1)
         
         tree_frame = tb.Frame(output_frame)
-        tree_frame.grid(row=0, column=0, sticky="nsew")
+        tree_frame.grid(row=0, column=0, sticky="nsew") # (row=0, ok)
         tree_frame.rowconfigure(0, weight=1)
         tree_frame.columnconfigure(0, weight=1)
         self.results_tree = tb.Treeview(tree_frame, columns=("Metric", "Value"), show="headings", bootstyle="info")
@@ -586,13 +599,22 @@ class QueueingCalculatorApp:
         self.results_tree.grid(row=0, column=0, sticky="nsew")
         scrollbar.grid(row=0, column=1, sticky="ns")
         
-        tb.Separator(output_frame, bootstyle="secondary").grid(row=1, column=0, sticky="ew", pady=(15, 5))
+        # --- NOVO BOTÃO DE EXPORTAR PDF (Linha 1) ---
+        self.export_button = tb.Button(output_frame, text="Exportar Resultados para PDF", 
+                                       command=self._export_pdf, bootstyle="success-outline")
+        self.export_button.grid(row=1, column=0, sticky="ew", padx=5, pady=(10, 5))
+        self.export_button.grid_remove() # Começa escondido
         
+        # --- Separador (AGORA Linha 2) ---
+        tb.Separator(output_frame, bootstyle="secondary").grid(row=2, column=0, sticky="ew", pady=(15, 5))
+        
+        # --- Título da Ajuda (AGORA Linha 3) ---
         tb.Label(output_frame, text="Definições e Fórmulas das Métricas:", bootstyle="inverse-info").grid(
-            row=2, column=0, sticky="w", padx=5)
+            row=3, column=0, sticky="w", padx=5)
         
+        # --- Caixa de Texto de Ajuda (AGORA Linha 4) ---
         help_text_frame = tb.Frame(output_frame)
-        help_text_frame.grid(row=3, column=0, sticky="nsew", padx=5, pady=(5,0))
+        help_text_frame.grid(row=4, column=0, sticky="nsew", padx=5, pady=(5,0))
         help_text_frame.rowconfigure(0, weight=1)
         help_text_frame.columnconfigure(0, weight=1)
 
@@ -615,14 +637,57 @@ class QueueingCalculatorApp:
         
         self._on_model_selected()
 
+    # --- FIM DA _create_widgets ---
+
+    # --- INÍCIO DAS OUTRAS FUNÇÕES (COM ALINHAMENTO CORRETO) ---
+
     def _open_add_formula_window(self):
         AddFormulaWindow(self) 
 
     def _open_manage_formulas_window(self):
         ManageFormulasWindow(self)
 
+    # --- AQUI ESTÁ A FUNÇÃO QUE VOCÊ ADICIONOU, AGORA NO LUGAR CERTO ---
+    def _import_params(self):
+        """Abre um seletor de arquivos, lê o .txt e preenche os campos."""
+        
+        # Abre o seletor de arquivos
+        filepath = filedialog.askopenfilename(
+            title="Selecionar arquivo de parâmetros",
+            filetypes=[("Arquivos de Texto", "*.txt"), ("Todos os Arquivos", "*.*")]
+        )
+        
+        if not filepath:
+            return # Usuário cancelou
+            
+        # Chama o nosso novo parser
+        try:
+            params_to_load = param_parser.parse_param_file(filepath)
+            if not params_to_load:
+                messagebox.showwarning("Aviso", "Nenhum parâmetro válido encontrado no arquivo.")
+                return
+        except Exception as e:
+            messagebox.showerror("Erro ao Ler", f"Não foi possível processar o arquivo:\n{e}")
+            return
+            
+        # Preenche os campos (Entry) na interface
+        filled_count = 0
+        for key, value in params_to_load.items():
+            # self.param_widgets contém os campos de entrada atuais
+            if key in self.param_widgets:
+                entry_widget = self.param_widgets[key]
+                entry_widget.delete(0, END)
+                entry_widget.insert(0, value)
+                filled_count += 1
+        
+        if filled_count > 0:
+            messagebox.showinfo("Sucesso", f"{filled_count} parâmetro(s) importado(s) com sucesso!")
+        else:
+            messagebox.showwarning("Aviso", "Nenhum parâmetro no arquivo corresponde aos campos do modelo atual.")
+
     def _show_model_help(self):
         title = "Sobre os Modelos de Fila"
+    # ... (o resto do seu código continua aqui) ...
         help_text = (
             "Aqui está um guia rápido sobre as diferenças:\n\n"
             "--- M/M/1 ---\n"
@@ -810,6 +875,7 @@ class QueueingCalculatorApp:
 
 
     def _on_model_selected(self, event=None):
+        self.export_button.grid_remove()
         for widget in self.params_frame.winfo_children():
             widget.destroy()
         self.param_widgets.clear()
@@ -819,6 +885,14 @@ class QueueingCalculatorApp:
 
         model_key = self.model_combo.get()
         config = MODELS_CONFIG.get(model_key, {})
+        
+        # --- BLOCO DE CÓDIGO ADICIONADO ---
+        # Esconde o botão de importar para modelos especiais
+        if model_key == "Personalizado" or model_key == "Comparativo (M/M/1 vs M/M/∞)":
+            self.import_button.grid_remove()
+        else:
+            self.import_button.grid() # Mostra o botão para M/M/1, M/M/c, etc.
+        # --- FIM DO BLOCO ---
         
         if model_key == "Personalizado":
             self.formula_btn_frame.grid()
@@ -856,7 +930,6 @@ class QueueingCalculatorApp:
             row += 1
         
         self._update_metric_help(model_key)
-
 
     def _run_comparison_calc(self, param_values):
         try:
@@ -959,9 +1032,56 @@ class QueueingCalculatorApp:
             
             except Exception as e:
                 self.results_tree.insert("", "end", values=(label, f"Erro: {e}"))
+                
+    def _export_pdf(self):
+        """Coleta os dados e chama o módulo de exportação de PDF."""
+        model_key = self.model_combo.get()
+        
+        # 1. Pergunta onde salvar o arquivo
+        filename = filedialog.asksaveasfilename(
+            title="Salvar PDF como...",
+            defaultextension=".pdf",
+            filetypes=[("PDF Documents", "*.pdf"), ("All Files", "*.*")]
+        )
+        
+        if not filename:
+            return # Usuário cancelou
+            
+        # 2. Coleta os Parâmetros de Entrada
+        params_data = []
+        all_possible_params = {
+            **MODELS_CONFIG[model_key].get("params", {}), 
+            **MODELS_CONFIG[model_key].get("optional_params", {})
+        }
+        for key, label in all_possible_params.items():
+            widget = self.param_widgets.get(key)
+            if widget:
+                val_str = widget.get().strip()
+                if val_str: # Só adiciona ao PDF se tiver valor
+                    params_data.append((label, val_str))
+
+        # 3. Coleta os Resultados da Tabela
+        results_data = []
+        for item_id in self.results_tree.get_children():
+            values = self.results_tree.item(item_id, 'values')
+            results_data.append(tuple(values))
+
+        # 4. Chama o módulo de exportação
+        try:
+            success = pdf_export.create_results_pdf(
+                filename=filename,
+                model_name=model_key,
+                params_data=params_data,
+                results_data=results_data
+            )
+            if success:
+                messagebox.showinfo("Sucesso", f"Resultados exportados para:\n{filename}")
+        except Exception as e:
+            messagebox.showerror("Erro na Exportação", f"Ocorreu um erro ao salvar o PDF:\n{e}")
 
     def _calculate_metrics(self):
         """Função principal de cálculo, agora dividida em 3 rotas."""
+        self.export_button.grid_remove()
         for item in self.results_tree.get_children():
             self.results_tree.delete(item)
             
@@ -1016,6 +1136,9 @@ class QueueingCalculatorApp:
                 pass 
             
             self._run_standard_calc(config, param_values)
+            
+        if self.results_tree.get_children():
+            self.export_button.grid()
 
 if __name__ == "__main__":
     root = tb.Window(themename="litera") 
